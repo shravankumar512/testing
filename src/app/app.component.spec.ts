@@ -1,8 +1,8 @@
 import { UserService } from './user.service';
 import { LoginService } from './login.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'
-import { TestBed, async, inject, fakeAsync } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
 
@@ -23,6 +23,7 @@ describe('AppComponent', () => {
       ],
       imports:[
         BrowserModule,
+        ReactiveFormsModule,
         FormsModule
       ],
       providers:[
@@ -66,6 +67,17 @@ describe('AppComponent', () => {
       });
   }));
 
+  it('should accept pin (with fakeAsync)', fakeAsync(() => {
+     var fixture = TestBed.createComponent(AppComponent);
+     var compiled = fixture.debugElement.nativeElement;
+
+     compiled.querySelector('button').click();
+
+     tick();
+     fixture.detectChanges();
+     expect(compiled.querySelector('h3').textContent).toContain('status');
+  }));
+
 });
 
 describe('Testing with mock service',()=>{
@@ -77,6 +89,7 @@ describe('Testing with mock service',()=>{
       ],
       imports:[
         BrowserModule,
+        ReactiveFormsModule,
         FormsModule
       ],
       providers:[
@@ -93,12 +106,13 @@ describe('Testing with mock service',()=>{
       expect(greeting).toContain('welcome!');
     })
   }));
-  it('shouldn`t greet with mock service', inject([UserService],(service)=>{
-    let data = {username:'ssdfsd',password:'sdfsdf'}
-    return service.getGreetings(data).then((greeting)=>{
-      expect(greeting).toContain('login failure');
-    })
-  }));
+
+  // it('shouldn`t greet with mock service', inject([UserService],(service)=>{
+  //   let data = {username:'ssdfsd',password:'sdfsdf'}
+  //   return service.getGreetings(data).then((greeting)=>{
+  //     expect(greeting).toContain('login failure');
+  //   })
+  // }));
 
 })
 
